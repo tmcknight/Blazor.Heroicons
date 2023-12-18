@@ -17,9 +17,14 @@ else
     /// <summary>
     /// The type of icon. Default: <see cref="HeroiconType.Outline"/>.
     /// </summary>
-    [Parameter] public HeroiconType Type { get; set; } = HeroiconType.Outline;
+    [Obsolete("Use Style instead")]
+    [Parameter] public HeroiconType? Type { get; set; }
+    /// <summary>
+    /// The type of icon. Default: <see cref="HeroiconStyle.Outline"/>.
+    /// </summary>
+    [Parameter] public HeroiconStyle Style { get; set; } = HeroiconStyle.Outline;
 
-    private HeroiconType _heroiconType;
+    private HeroiconStyle _heroiconStyle;
     private Type? _razorComponentType;
 
     protected override void OnParametersSet()
@@ -33,14 +38,19 @@ else
             name = $"{name}Icon";
         }
 
+        if (Type.HasValue)
+        {
+            Style = GetStyleFromType(Type);
+        }
+
         //check to see if the icon parameters have changed
         if (_razorComponentType is null ||
         _razorComponentType.Name.ToLower() != name.ToLower() ||
-        _heroiconType != Type)
+        _heroiconStyle != Style)
         {
             //find icon based on name and type
-            _razorComponentType = System.Type.GetType($"Blazor.Heroicons.{Type}.{name}", false, true)!;
-            _heroiconType = Type;
+            _razorComponentType = System.Type.GetType($"Blazor.Heroicons.{Style}.{name}", false, true)!;
+            _heroiconStyle = Style;
         }
     }
 
