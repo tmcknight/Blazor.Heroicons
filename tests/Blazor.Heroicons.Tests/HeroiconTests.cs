@@ -16,7 +16,7 @@ public class HeroiconTests : BunitTestContext
         var sparklesIcon = RenderComponent<SparklesIcon>();
         Assert.IsFalse(cut.Find("svg").HasAttribute("class"));
         Assert.AreEqual(HeroiconName.Sparkles, cut.Instance.Name);
-        Assert.AreEqual(HeroiconType.Outline, cut.Instance.Type);
+        Assert.AreEqual(HeroiconStyle.Outline, cut.Instance.Style);
         Assert.AreEqual(sparklesIcon.Markup, cut.Markup);
     }
 
@@ -61,15 +61,15 @@ public class HeroiconTests : BunitTestContext
     }
 
     [TestMethod]
-    [DataRow(HeroiconType.Solid)]
-    [DataRow(HeroiconType.Outline)]
-    [DataRow(HeroiconType.Mini)]
-    [DataRow(HeroiconType.Micro)]
-    public void AllIconsRenderCorrectly(HeroiconType heroiconType)
+    [DataRow(HeroiconStyle.Solid)]
+    [DataRow(HeroiconStyle.Outline)]
+    [DataRow(HeroiconStyle.Mini)]
+    [DataRow(HeroiconStyle.Micro)]
+    public void AllIconsRenderCorrectly(HeroiconStyle heroiconStyle)
     {
         // Arrange
         var icons = Assembly.GetExecutingAssembly().GetTypes()
-                            .Where(t => t.Namespace == $"Blazor.Heroicons.{heroiconType}")
+                            .Where(t => t.Namespace == $"Blazor.Heroicons.{heroiconStyle}")
                             .ToList();
 
         // Act
@@ -105,11 +105,11 @@ public class HeroiconTests : BunitTestContext
         //Act
         var cut = RenderComponent<Heroicon>();
         // Assert
-        Assert.AreEqual(HeroiconType.Outline, cut.Instance.Type);
+        Assert.AreEqual(HeroiconStyle.Outline, cut.Instance.Style);
         var sparkles = cut.Markup;
         cut.SetParametersAndRender(parameters => parameters
-            .Add(p => p.Type, HeroiconType.Solid));
-        Assert.AreEqual(HeroiconType.Solid, cut.Instance.Type);
+            .Add(p => p.Style, HeroiconStyle.Solid));
+        Assert.AreEqual(HeroiconStyle.Solid, cut.Instance.Style);
         Assert.AreNotEqual(sparkles, cut.Markup);
     }
 
@@ -119,7 +119,7 @@ public class HeroiconTests : BunitTestContext
         // Arrange 
         var cut = RenderComponent<Heroicon>(parameters => parameters
             .Add(p => p.Name, "HandThumbUpIcon")
-            .Add(p => p.Type, HeroiconType.Solid));
+            .Add(p => p.Style, HeroiconStyle.Solid));
 
         //Act
         cut.SetParametersAndRender(parameters => parameters
@@ -128,6 +128,6 @@ public class HeroiconTests : BunitTestContext
         // Assert
         Assert.AreEqual("h-10 w-10", cut.Find("svg").GetAttribute("class"));
         Assert.AreEqual("HandThumbUpIcon", cut.Instance.Name);
-        Assert.AreEqual(HeroiconType.Solid, cut.Instance.Type);
+        Assert.AreEqual(HeroiconStyle.Solid, cut.Instance.Style);
     }
 }
