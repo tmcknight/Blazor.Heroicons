@@ -7,29 +7,33 @@
     /// <summary>
     /// The type of icon. Default: <see cref="HeroiconType.Outline"/>.
     /// </summary>
-    [Parameter]
-    public HeroiconType Type { get; set; } = HeroiconType.Outline;
-    private HeroiconType _heroiconType = HeroiconType.Outline;
+    [Obsolete("Use Style instead")]
+    [Parameter] public HeroiconType? Type { get; set; }
+    [Parameter] public HeroiconStyle Style { get; set; } = HeroiconStyle.Outline;
+    private HeroiconStyle _heroiconStyle = HeroiconStyle.Outline;
     public Type _razorComponentType = null!;
 
     protected override void OnParametersSet()
     {
-        base.OnParametersSet();
+        if (Type.HasValue)
+        {
+            Style = GetStyleFromType(Type);
+        }
 
         //check to see if the icon parameters have changed
-        if (_razorComponentType is null || _heroiconType != Type)
+        if (_razorComponentType is null || _heroiconStyle != Style)
         {
-            _heroiconType = Type;
+            _heroiconStyle = Style;
 
             //get random icon
-            _razorComponentType = GetRandomIcon(Type);
+            _razorComponentType = GetRandomIcon(Style);
         }
     }
 
-    private Type GetRandomIcon(HeroiconType type)
+    private Type GetRandomIcon(HeroiconStyle style)
     {
         var componentTypes = Assembly.GetExecutingAssembly().GetTypes()
-        .Where(t => t.IsClass && t.Namespace == $"Blazor.Heroicons.{type}");
+        .Where(t => t.IsClass && t.Namespace == $"Blazor.Heroicons.{style}");
         return componentTypes.ElementAt(Random.Shared.Next(0, componentTypes.Count()));
     }
 
